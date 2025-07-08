@@ -68,24 +68,23 @@
   </style>
 </head>
 <body>
-  <h1>MOD AI Web Generator (via OpenRouter)</h1>
-  <p>Contoh prompt: <i>"Buatkan landing page neon untuk jualan panel MOD."</i></p>
+  <h1>MOD AI Web Generator (OpenRouter)</h1>
+  <p>Contoh prompt: <i>"Buatkan web payment neon-dark responsive."</i></p>
 
   <select id="modelSelect">
-    <option value="openrouter/deepseek-coder:free">DeepSeek Coder (Free)</option>
-    <option value="openrouter/meta-llama-3-8b-instruct:free">LLaMA 3 (Free)</option>
+    <option value="mistralai/mistral-7b-instruct:free">Mistral 7B (Free)</option>
   </select>
 
-  <input id="userInput" placeholder="Masukkan permintaan kamu..." />
+  <input id="userInput" placeholder="Masukkan prompt kamu..." />
   <button onclick="generateCode()">Generate</button>
 
   <h2 style="margin-top:2rem;">Kode:</h2>
-  <div id="codeOutput" class="code-output"></div>
+  <div id="codeOutput" class="code-output">[Menunggu prompt kamu...]</div>
 
   <div class="btn-row">
-    <button onclick="copyCode()">Copy Code</button>
-    <button onclick="downloadCode()">Download HTML</button>
-    <button onclick="previewCode()">Preview</button>
+    <button onclick="copyCode()">COPY CODE</button>
+    <button onclick="downloadCode()">DOWNLOAD</button>
+    <button onclick="previewCode()">PREVIEW</button>
   </div>
 
   <h2 style="margin-top:2rem;">Preview:</h2>
@@ -98,25 +97,24 @@
       const prompt = document.getElementById("userInput").value.trim();
       const model = document.getElementById("modelSelect").value;
       const output = document.getElementById("codeOutput");
-      if (!prompt) return;
 
-      output.innerText = "⏳ Menghubungi AI (OpenRouter)...";
+      if (!prompt) return alert("❗ Masukkan prompt dulu!");
+
+      output.innerText = "⏳ Sedang generate HTML...";
 
       try {
         const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`,
-            "HTTP-Referer": "http://localhost",
-            "X-Title": "MOD AI HTML Generator"
+            "Authorization": `Bearer ${apiKey}`
           },
           body: JSON.stringify({
-            model: model,
+            model,
             messages: [
               {
                 role: "system",
-                content: "Kamu adalah AI pembuat kode HTML, CSS, dan JavaScript untuk web. Jawab hanya dengan kode lengkap dan valid HTML."
+                content: "Kamu adalah AI pembuat website. Balas hanya dengan kode HTML lengkap yang valid, tanpa penjelasan."
               },
               {
                 role: "user",
@@ -127,10 +125,15 @@
         });
 
         const data = await res.json();
-        const reply = data.choices?.[0]?.message?.content || "[Gagal generate]";
-        output.innerText = reply;
+        if (data.choices && data.choices[0]) {
+          output.innerText = data.choices[0].message.content;
+        } else {
+          output.innerText = "[❌ Gagal generate: Tidak ada balasan]";
+          console.error("Respon kosong:", data);
+        }
       } catch (err) {
-        output.innerText = "❌ Error: " + err.message;
+        output.innerText = "[❌ Gagal generate: " + err.message + "]";
+        console.error("ERROR:", err);
       }
     }
 
@@ -146,7 +149,7 @@
     function copyCode() {
       const code = document.getElementById("codeOutput").innerText;
       navigator.clipboard.writeText(code).then(() => {
-        alert("✅ Kode disalin!");
+        alert("✅ Kode disalin ke clipboard!");
       });
     }
 
