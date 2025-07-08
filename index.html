@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <title>MOD AI Web Builder</title>
+  <meta charset="UTF-8">
+  <title>MOD AI Web Generator (OpenAI)</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
   <style>
     body {
@@ -19,7 +19,7 @@
       margin-bottom: 0.5rem;
       text-shadow: 0 0 10px #66fcf1;
     }
-    input, select, button, textarea {
+    input, button, textarea {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
@@ -29,7 +29,6 @@
       font-family: 'Orbitron', monospace;
       font-size: 14px;
       border-radius: 5px;
-      box-shadow: 0 0 10px #0b0c10;
     }
     button {
       cursor: pointer;
@@ -37,7 +36,6 @@
       background: #45a29e;
       color: #0b0c10;
       text-transform: uppercase;
-      transition: 0.2s;
     }
     button:hover {
       background: #66fcf1;
@@ -69,15 +67,10 @@
 </head>
 <body>
   <h1>MOD AI Web Generator (OpenAI)</h1>
-  <p>Contoh prompt: <i>"Buatkan web payment neon-dark responsive."</i></p>
+  <p>Prompt contoh: <i>"Buatkan web landing page neon-dark"</i></p>
 
-  <select id="modelSelect">
-    <option value="gpt-4">GPT-4</option>
-    <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-  </select>
-
-  <input id="userInput" placeholder="Masukkan prompt kamu..." />
-  <button onclick="generateCode()">Generate</button>
+  <input id="userInput" placeholder="Tulis prompt kamu di sini..." />
+  <button onclick="generateCode()">GENERATE</button>
 
   <h2 style="margin-top:2rem;">Kode:</h2>
   <div id="codeOutput" class="code-output">[Menunggu prompt kamu...]</div>
@@ -92,11 +85,10 @@
   <iframe id="previewFrame"></iframe>
 
   <script>
-    const apiKey = "pk-pIWAlRroXTOAigkWdHcYvmlmgzEQXuoMWbVAaLAVZswSRbEB";
+    const OPENAI_API_KEY = "ISI_APIKEY_KAMU_DI_SINI";
 
     async function generateCode() {
       const prompt = document.getElementById("userInput").value.trim();
-      const model = document.getElementById("modelSelect").value;
       const output = document.getElementById("codeOutput");
 
       if (!prompt) return alert("❗ Masukkan prompt dulu!");
@@ -108,34 +100,32 @@
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`
+            Authorization: `Bearer ${OPENAI_API_KEY}`
           },
           body: JSON.stringify({
-            model,
+            model: "gpt-4",
             messages: [
               {
                 role: "system",
-                content: "Kamu adalah AI pembuat website. Balas hanya dengan kode HTML lengkap yang valid, tanpa penjelasan."
+                content: "Kamu adalah AI pembuat website. Balas hanya dengan kode HTML lengkap, tanpa penjelasan apa pun."
               },
               {
                 role: "user",
                 content: prompt
               }
-            ],
-            temperature: 0.7
+            ]
           })
         });
 
         const data = await res.json();
+
         if (data.choices && data.choices[0]) {
           output.innerText = data.choices[0].message.content;
         } else {
-          output.innerText = "[❌ Gagal generate: Tidak ada balasan]";
-          console.error("Respon kosong:", data);
+          output.innerText = "[❌ Gagal generate: Tidak ada hasil dari API]";
         }
       } catch (err) {
-        output.innerText = "[❌ Gagal generate: " + err.message + "]";
-        console.error("ERROR:", err);
+        output.innerText = "[❌ Error: " + err.message + "]";
       }
     }
 
