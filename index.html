@@ -1,72 +1,202 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>MOD AI Web Builder Lokal (Tanpa API)</title>
-  <script type="module">
-    import { ChatModule } from "https://mlc.ai/web-llm/dist/web-llm.mjs";
-
-    const chat = new ChatModule();
-
-    // Load the model (mistral or tinyllama available)
-    await chat.reload("RedPajama-INCITE-Chat-3B-v1-q4f32_1");
-
-    window.generateLocalAI = async () => {
-      const prompt = document.getElementById("userPrompt").value.trim();
-      const outputEl = document.getElementById("codeOutput");
-
-      if (!prompt) return alert("Masukkan prompt dulu!");
-
-      outputEl.innerText = "⏳ Generating HTML dari model lokal...";
-
-      const reply = await chat.chat(prompt);
-      outputEl.innerText = reply;
-    };
-  </script>
-
+  <title>PAYMENT JURAGAN MOD</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background: #0b0c10;
-      color: #66fcf1;
-      font-family: 'Orbitron', sans-serif;
-      padding: 2rem;
-      max-width: 900px;
-      margin: auto;
+      font-family: 'Share Tech Mono', monospace;
+      background: url('https://i.ibb.co/tTZ52VVT/4bde2edaf189.jpg') no-repeat center center fixed;
+      background-size: cover;
+      overflow: hidden;
+      color: #0ff;
+      position: relative;
     }
-    textarea, button {
+
+    .container {
+      text-align: center;
+      padding-top: 80px;
+      animation: float 4s ease-in-out infinite;
+      position: relative;
+      z-index: 2;
+    }
+
+    .glitch {
+      font-size: 2.5em;
+      color: #0ff;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 40px #0ff;
+      position: relative;
+      animation: flicker 2s infinite;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
       width: 100%;
-      padding: 12px;
-      background: #1f2833;
-      color: #fff;
-      border: none;
-      margin-top: 10px;
-      border-radius: 6px;
+      color: #0ff;
     }
-    button {
-      background: #45a29e;
-      cursor: pointer;
-      font-weight: bold;
-      text-transform: uppercase;
+
+    .glitch::before {
+      top: -2px;
+      text-shadow: -2px 0 red;
+      animation: glitchTop 1s infinite linear alternate-reverse;
     }
-    button:hover {
-      background: #66fcf1;
+
+    .glitch::after {
+      top: 2px;
+      text-shadow: 2px 0 blue;
+      animation: glitchBottom 1s infinite linear alternate-reverse;
     }
-    pre {
-      background: #1f2833;
-      color: #fff;
-      padding: 1rem;
-      border-radius: 5px;
-      white-space: pre-wrap;
+
+    .dana {
       margin-top: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 12px 24px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px cyan, 0 0 20px cyan;
+    }
+
+    .dana img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+    }
+
+    .qr {
+      margin-top: 30px;
+    }
+
+    .qr img {
+      width: 260px;
+      border: 4px solid #0ff;
+      border-radius: 12px;
+      box-shadow: 0 0 20px cyan, 0 0 40px cyan;
+    }
+
+    @keyframes glitchTop {
+      0% { clip-path: inset(0 0 90% 0); }
+      100% { clip-path: inset(40% 0 20% 0); }
+    }
+
+    @keyframes glitchBottom {
+      0% { clip-path: inset(40% 0 20% 0); }
+      100% { clip-path: inset(0 0 90% 0); }
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+      75% { opacity: 0.4; }
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+      100% { transform: translateY(0); }
+    }
+
+    /* Twinkling Stars */
+    .stars, .shooting-stars {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #0ff;
+      box-shadow: 0 0 6px #0ff;
+      animation: twinkle 2s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.5); }
+    }
+
+    /* Shooting Star */
+    .shooting-star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      box-shadow: 0 0 6px #0ff, 0 0 12px #0ff;
+      animation: shoot 2s linear forwards;
+    }
+
+    @keyframes shoot {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-1000px, 600px) scale(0.5);
+        opacity: 0;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>MOD AI HTML Builder (Tanpa API, Lokal)</h1>
-  <textarea id="userPrompt" rows="3" placeholder="Contoh: Buatkan landing page neon dark untuk toko digital..."></textarea>
-  <button onclick="generateLocalAI()">Generate HTML (Offline)</button>
 
-  <h2>Hasil:</h2>
-  <pre id="codeOutput">[Menunggu prompt kamu...]</pre>
+  <div class="stars"></div>
+  <div class="shooting-stars"></div>
+
+  <div class="container">
+    <h1 class="glitch" data-text="PAYMENT JURAGAN MOD">PAYMENT JURAGAN MOD</h1>
+
+    <div class="dana">
+      <img src="https://i.ibb.co/TBjhR23V/3362737c3572.jpg" alt="Logo DANA">
+      <span style="font-size: 1.2em;">083830330486</span>
+    </div>
+
+    <div class="qr">
+      <img src="https://i.ibb.co/mVWQsstd/524e13d05c86.jpg" alt="QRIS">
+    </div>
+  </div>
+
+  <script>
+    // Twinkling stars
+    for (let i = 0; i < 80; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      document.querySelector('.stars').appendChild(star);
+    }
+
+    // Shooting stars
+    function createShootingStar() {
+      const star = document.createElement('div');
+      star.className = 'shooting-star';
+      star.style.top = Math.random() * 30 + '%';
+      star.style.left = Math.random() * 100 + '%';
+      document.querySelector('.shooting-stars').appendChild(star);
+      setTimeout(() => star.remove(), 2000);
+    }
+
+    setInterval(createShootingStar, 3000); // Launch every 3s
+  </script>
 </body>
 </html>
