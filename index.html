@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MOD AI Web Builder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #0b0c10;
+      color: #66fcf1;
+      font-family: 'Orbitron', sans-serif;
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+    h1 {
+      color: #45a29e;
+      font-size: 28px;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 10px #66fcf1;
+    }
+    input, select, button, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      background: #1f2833;
+      color: #fff;
+      font-family: 'Orbitron', monospace;
+      font-size: 14px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px #0b0c10;
+    }
+    button {
+      cursor: pointer;
+      font-weight: bold;
+      background: #45a29e;
+      color: #0b0c10;
+      text-transform: uppercase;
+      transition: 0.2s;
+    }
+    button:hover {
+      background: #66fcf1;
+    }
+    .code-output {
+      white-space: pre-wrap;
+      background: #1f2833;
+      padding: 1rem;
+      border: 1px solid #45a29e;
+      border-radius: 5px;
+      overflow-x: auto;
+      font-size: 14px;
+      color: #f1f1f1;
+    }
+    iframe {
+      width: 100%;
+      height: 400px;
+      border: 2px solid #66fcf1;
+      background: white;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>MOD AI Web Generator (via OpenRouter)</h1>
+  <p>Contoh prompt: <i>"Buatkan landing page neon untuk jualan panel MOD."</i></p>
+
+  <select id="modelSelect">
+    <option value="openrouter/deepseek-coder:free">DeepSeek Coder (Free)</option>
+    <option value="openrouter/meta-llama-3-8b-instruct:free">LLaMA 3 (Free)</option>
+  </select>
+
+  <input id="userInput" placeholder="Masukkan permintaan kamu..." />
+  <button onclick="generateCode()">Generate</button>
+
+  <h2 style="margin-top:2rem;">Kode:</h2>
+  <div id="codeOutput" class="code-output"></div>
+
+  <div class="btn-row">
+    <button onclick="copyCode()">Copy Code</button>
+    <button onclick="downloadCode()">Download HTML</button>
+    <button onclick="previewCode()">Preview</button>
+  </div>
+
+  <h2 style="margin-top:2rem;">Preview:</h2>
+  <iframe id="previewFrame"></iframe>
+
+  <script>
+    const apiKey = "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";
+
+    async function generateCode() {
+      const prompt = document.getElementById("userInput").value.trim();
+      const model = document.getElementById("modelSelect").value;
+      const output = document.getElementById("codeOutput");
+      if (!prompt) return;
+
+      output.innerText = "⏳ Menghubungi AI (OpenRouter)...";
+
+      try {
+        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`,
+            "HTTP-Referer": "http://localhost",
+            "X-Title": "MOD AI HTML Generator"
+          },
+          body: JSON.stringify({
+            model: model,
+            messages: [
+              {
+                role: "system",
+                content: "Kamu adalah AI pembuat kode HTML, CSS, dan JavaScript untuk web. Jawab hanya dengan kode lengkap dan valid HTML."
+              },
+              {
+                role: "user",
+                content: prompt
+              }
+            ]
+          })
+        });
+
+        const data = await res.json();
+        const reply = data.choices?.[0]?.message?.content || "[Gagal generate]";
+        output.innerText = reply;
+      } catch (err) {
+        output.innerText = "❌ Error: " + err.message;
+      }
+    }
+
+    function previewCode() {
+      const code = document.getElementById("codeOutput").innerText;
+      const iframe = document.getElementById("previewFrame");
+      const doc = iframe.contentWindow.document;
+      doc.open();
+      doc.write(code);
+      doc.close();
+    }
+
+    function copyCode() {
+      const code = document.getElementById("codeOutput").innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        alert("✅ Kode disalin!");
+      });
+    }
+
+    function downloadCode() {
+      const code = document.getElementById("codeOutput").innerText;
+      const blob = new Blob([code], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "hasil.html";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
